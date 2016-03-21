@@ -11,38 +11,54 @@ typedef vector < wiersz > matrix;
 
 using namespace std;
 
-Macierz::Macierz(int nwierszy, int mkolumn)
+/*Macierz::Macierz(int nwierszy, int mkolumn, double liczba, char opcja)//konstruktor macierzy diagonalnej
 {
-    kolumna = vector<double> (mkolumn, 0);
-    tablica = vector< vector<double> > (nwierszy, kolumna);
+    if ((nwierszy<=0 || mkolumn<=0) || (nwierszy != mkolumn))
+    {
+    throw invalid_argument( "Liczba wierszy i kolumn musi byc wieksza od 0" );
+    }
+    if (opcja == 'd')
+    {
+        vector<double> kolumna (mkolumn, 0);
+        tablica = vector< vector<double> > (nwierszy, kolumna);
+        for (int j=0;j<nwierszy;j++)
+        {
+            this->tablica[j][j]=1;
+        }
+    }
+    else
+    {
+        if (nwierszy<=0 || mkolumn<=0)
+        {
+            throw invalid_argument( "Liczba wierszy i kolumn musi byc wieksza od 0" );
+        }
+    vector<double> kolumna (mkolumn, liczba);
+    tablica = vector< vector<double> > (nwierszy, kolumna);  
+    }
 }
-
-Macierz::Macierz(int nwierszy, int mkolumn, double liczba)
+*/
+Macierz::Macierz(int nwierszy, int mkolumn, double liczba)//konstruktor macierzy
 {
-    kolumna = vector<double> (mkolumn, liczba);
-    tablica = vector< vector<double> > (nwierszy, kolumna);
-    /*for(unsigned int k=0;k<tablica.size();k++)
+    if (nwierszy<=0 || mkolumn<=0)
     {
-        cout<<endl;
-        for (unsigned int l=0;l<kolumna.size();l++)
-    {
-        cout<<tablica[k][l]<<" ";
+    throw invalid_argument( "Liczba wierszy i kolumn musi byc wieksza od 0" );
     }
-    }
-    cout<<endl;*/    
+    vector<double> kolumna (mkolumn, liczba);
+    tablica = vector< vector<double> > (nwierszy, kolumna); 
 }
-
+/*
 Macierz::Macierz()
 {    
     vector<double> kolumna(1, 0);
     vector< vector<double> > tablica(1, kolumna);
-}
-void Macierz::wprowadz()//wprowadza cala macierz
+}*/
+
+void Macierz::wprowadz()//wprowadza cala macierz 
 {
     for(unsigned int k=0;k<tablica.size();k++)
     {
         cout<<endl;
-        for (unsigned int l=0;l<kolumna.size();l++)
+        for (unsigned int l=0;l<lkolumn();l++)
     {
         cout<<"Wprowadz element: ["<<k<<"]["<<l<<"] macierzy: "<<endl;
         cin>>tablica[k][l];
@@ -52,6 +68,10 @@ void Macierz::wprowadz()//wprowadza cala macierz
 
 void Macierz::wprowadz(int i, int j)//wprowadz element o wsp i,j
 {
+    if (i<0 || j<0)
+    {
+        throw invalid_argument( "Wpolrzedne elementu musza byc liczbami naturalnymi" );
+    }
     cout<<"Wprowadz element: ["<<i<<"]["<<j<<"] macierzy"<<endl;
     cin>>tablica[i][j];
     wyswietl();
@@ -59,21 +79,25 @@ void Macierz::wprowadz(int i, int j)//wprowadz element o wsp i,j
 
 void Macierz::wprowadz(int i)//wprowadz wiersz
 {
+    if (i<0)
+    {
+        throw invalid_argument( "Wpolrzedna wiersza musi byc wyrazona liczba naturalna" );
+    }
     cout<<"Wprowadz rzad ["<<i<<"] macierzy"<<endl;
-    for(unsigned int j=0;j<kolumna.size();j++)
+    for(unsigned int j=0;j<lkolumn();j++)
     {
         cin>>tablica[i][j];
     }
     wyswietl();
 }
 
-Macierz::~Macierz()
-{cout<<"Usuwamy: "<<this<<endl;}
+Macierz::~Macierz()//destruktor
+{/*cout<<"Usuwamy: "<<this<<endl;*/}
 
 void Macierz::wyswietl()//wyswietla macierz
 {
     for(unsigned int i=0;i<tablica.size();i++)
-        {for(unsigned int j=0;j<kolumna.size();j++)
+        {for(unsigned int j=0;j<lkolumn();j++)
         {
             cout<<tablica[i][j]<<" ";
         }
@@ -83,12 +107,20 @@ void Macierz::wyswietl()//wyswietla macierz
 
 void Macierz::wyswietl(int i, int j)//wyswietla element
 {
+    if (i<0 || j<0)
+    {
+        throw invalid_argument( "Wpolrzedne elementu musza byc liczbami naturalnymi" );
+    }
     cout<<tablica[i][j]<<endl;
 }
 
 void Macierz::wyswietl(int i)//wyswietla wiersz
 {
-    for(unsigned int j=0;j<kolumna.size();j++)
+    if (i<0)
+    {
+        throw invalid_argument( "Wpolrzedna wiersza musi byc wyrazona liczba naturalna" );
+    }
+    for(unsigned int j=0;j<lkolumn();j++)
     {
         cout<<tablica[i][j]<<" ";
     }
@@ -98,8 +130,8 @@ void Macierz::wyswietl(int i)//wyswietla wiersz
 void Macierz::dodajwiersz()//dodaje wiersz
 {
     cout<<"Podaj el. nowego wiersza"<<endl;
-    vector<double> tmp(kolumna.size());
-    for (unsigned int i = 0; i<kolumna.size();i++)
+    wiersz tmp(lkolumn());
+    for (unsigned int i = 0; i<lkolumn();i++)
     {
         cin>>tmp[i];
     }
@@ -113,101 +145,111 @@ void Macierz::dodajwiersz(vector<double> nowy)//pozwala dodac juz istniejacy wie
 
 void Macierz::dodajwiersz(vector<double> nowy, int i)//kiedys pozwoli dodac wiersz w dowolnym miejscu
 {
-    
+    if (i<0)
+    {
+        throw invalid_argument( "Wpolrzedna wiersza musi byc wyrazona liczba naturalna" );
+    }
 }
 
-void Macierz::usunwiersz()//usuwa wiersz
+void Macierz::usunwiersz()//usuwa ostatni wiersz
 {
     tablica.erase(tablica.end());
 }
 
-void Macierz::usunwiersz(int i)//usuwa ity wiersz
+void Macierz::usunwiersz(int i)//usuwa i-ty wiersz
 {
+    if (i<0)
+    {
+        throw invalid_argument( "Wpolrzedna wiersza musi byc wyrazona liczba naturalna" );
+    }
     tablica.erase(tablica.begin()+i);
 }
 
 void Macierz::dodajkolumne()//dodaje kolumne
 {
-    Macierz tmp(tablica.size(),kolumna.size());//tymczasowa do przepisania
+    Macierz tmp(tablica.size(),lkolumn());//tymczasowa do przepisania
     
     for(unsigned int i=0;i<tablica.size();i++)
-        {for(unsigned int j=0;j<kolumna.size();j++)
+        {for(unsigned int j=0;j<lkolumn();j++)
         {
             tmp.tablica[i][j]=tablica[i][j];//przepisanie
         }
         }
     
-    kolumna = wiersz (kolumna.size()+1);//nowe wymiary
+    kolumna = wiersz (lkolumn()+1);//nowe wymiary
     tablica = matrix (tablica.size(),kolumna);
     for(unsigned int i=0;i<tablica.size();i++)//przepisywanie
-        {for(unsigned int j=0;j<(kolumna.size()-1);j++)
+        {for(unsigned int j=0;j<(lkolumn()-1);j++)
         {
             tablica[i][j]=tmp.tablica[i][j];
         }
         }
         for(unsigned int i=0;i<tablica.size();i++)
         {   
-            wprowadz(i,kolumna.size()-1);
+            wprowadz(i,lkolumn()-1);
         }
 }
 
 void Macierz::dodajkolumne(int i)//dodaje kolumne
 {
-    Macierz tmp(tablica.size(),kolumna.size());//tymczasowa do przepisania
-    
-    for(unsigned int i=0;i<tablica.size();i++)
-        {for(unsigned int j=0;j<kolumna.size();j++)
+    if (i<0)
+    {
+        throw invalid_argument( "Wpolrzedna kolumny musi byc wyrazona liczba naturalna" );
+    }
+    Macierz tmp(tablica.size(),lkolumn());//tymczasowa do przepisania
+    for( int i=0;i<tablica.size();i++)
+        {for( int j=0;j<lkolumn();j++)
         {
             tmp.tablica[i][j]=tablica[i][j];//przepisanie
         }
         }
     
-    kolumna = wiersz (kolumna.size()+1);//nowe wymiary
+    kolumna = wiersz (lkolumn()+1);//nowe wymiary
     tablica = matrix (tablica.size(),kolumna);
-    for(unsigned int i=0;i<tablica.size();i++)//przepisywanie
-        {for(unsigned int j=0;j<(kolumna.size()-1);j++)
+    for( int i=0;i<tablica.size();i++)//przepisywanie
+        {for( int j=0;j<(lkolumn()-1);j++)
         {
             tablica[i][j]=tmp.tablica[i][j];
         }
         }
-        for(unsigned int i=0;i<tablica.size();i++)
+        for( int i=0;i<tablica.size();i++)
         {   
-            wprowadz(i,kolumna.size()-1);
+            wprowadz(i,lkolumn()-1);
         }
 }
 
-void Macierz::dodajkolumne(wiersz nowy)
+void Macierz::dodajkolumne(wiersz nowy)// nie dziala, ale to nie ma prawa dzialac
 {
-        Macierz tmp(tablica.size(),kolumna.size());
+        Macierz tmp(tablica.size(),lkolumn());
     for(unsigned int i=0;i<tablica.size();i++)
-        {for(unsigned int j=0;j<kolumna.size();j++)
+        {for(unsigned int j=0;j<lkolumn();j++)
         {
             tmp.tablica[i][j]=tablica[i][j];
         }
         }
     
-    kolumna = wiersz (kolumna.size()+1);
+    kolumna = wiersz (lkolumn()+1);
     tablica = matrix (tablica.size(),kolumna);
     for(unsigned int i=0;i<tablica.size();i++)
-        {for(unsigned int j=0;j<(kolumna.size()-1);j++)
+        {for(unsigned int j=0;j<(lkolumn()-1);j++)
         {
             tablica[i][j]=tmp.tablica[i][j];
         }
         }
         for(unsigned int i=0;i<tablica.size();i++)
         { cout<<nowy[i]<<" ";  
-            tablica[i][kolumna.size()-1]=nowy[i];
+            tablica[i][lkolumn()-1]=nowy[i];
         }
 }
 
-void Macierz::usunmacierz()
+void Macierz::usunmacierz()//usuwa macierz
 {
     tablica.clear();
 }
 
-bool Macierz::czykwadratowa()
+bool Macierz::czykwadratowa()//sprawdza czy macierz jest kwadratowa
 {
-    if(tablica.size()==kolumna.size())
+    if(tablica.size()==lkolumn())
     {
         return true;
     }
@@ -217,7 +259,7 @@ bool Macierz::czykwadratowa()
     }
 }
 
-double Macierz::determ() //nie oblicza poprawnie, wina algorytmu
+double Macierz::determ() //nie oblicza poprawnie
 {//sprobowac na tablicach
     if (!Macierz::czykwadratowa())
         return 0.0;
@@ -233,6 +275,11 @@ double Macierz::determ() //nie oblicza poprawnie, wina algorytmu
     else if (n == 2) 
     {
         return( (tablica[0][0] * tablica[1][1]) - (tablica[1][0] * tablica[0][1]));
+    }
+    else if (n==3)
+    {
+        return( (tablica[0][0]*tablica[1][1]*tablica[2][2])+(tablica[0][1]*tablica[1][2]*tablica[2][0])+(tablica[0][2]*tablica[1][0]*tablica[2][1])
+        -(tablica[2][0]*tablica[1][1]*tablica[0][2])-(tablica[2][1]*tablica[1][2]*tablica[0][0])-(tablica[2][2]*tablica[1][0]*tablica[0][1]));
     }
     else
     {  
@@ -277,6 +324,11 @@ double Macierz::determ(int n) //nie dziala poprawnie wina algorytmu
     {
         return( (tablica[0][0] * tablica[1][1]) - (tablica[1][0] * tablica[0][1]));
     }
+    else if (n==3)
+    {
+        return( (tablica[0][0]*tablica[1][1]*tablica[2][2])+(tablica[0][1]*tablica[1][2]*tablica[2][0])+(tablica[0][2]*tablica[1][0]*tablica[2][1])
+        -(tablica[2][0]*tablica[1][1]*tablica[0][2])-(tablica[2][1]*tablica[1][2]*tablica[0][0])-(tablica[2][2]*tablica[1][0]*tablica[0][1]));
+    }
     else
     {  
         for(p=0;p<n;p++) 
@@ -309,191 +361,231 @@ double Macierz::determ(int n) //nie dziala poprawnie wina algorytmu
 
 void Macierz::t()//transpozycja
 {
-    int lwierszy,lkolumn;
-    lwierszy=tablica.size();
-    lkolumn=kolumna.size();
-    Macierz tmp(kolumna.size(),tablica.size());
-for(unsigned int i=0;i<tmp.tablica.size();i++)
+    int nwierszy,nkolumn; 
+    nwierszy=lkolumn();
+    nkolumn=lwierszy();
+    Macierz tmp(nwierszy,nkolumn);//macierz do przepisania
+    for(int i=0;i<tmp.lwierszy();i++)
     {
-        for(unsigned int j=0;j<tmp.kolumna.size();j++)
+        for(int j=0;j<tmp.lkolumn();j++)
         {
-            tmp.tablica[i][j]=tablica[j][i];
+            tmp.tablica[i][j]=tablica[j][i];//przepisywanie
         }
-    }tmp.wyswietl();
-    kolumna.resize(lwierszy,0);
-    tablica.resize(lkolumn);
-    cout<<"wymiary macierzy: "<<tablica.size()<<" "<<kolumna.size()<<endl<<endl;
-    
-    for(unsigned int i=0;i<(tablica.size());i++)
+    }
+    this->tablica=tmp.tablica;
+}
+
+Macierz Macierz::diag(int i)
+{
+   if (i<=0)
     {
-        for(unsigned int j=0;j<(kolumna.size());j++)
+        throw invalid_argument( "Wielkosc macierzy diagonalnej musi byc wyrazona liczba naturalna wieksza od 0" );
+    }
+    Macierz tmp = Macierz(i,i,0);
+    for (int j=0;j<i;j++)
+    {
+        tmp.tablica[j][j]=1;
+    }
+    return tmp;
+}
+
+void Macierz::invert()//odwrocenie macierzy metoda Gaussa Jordana nie dziala
+{
+    if (!czykwadratowa())
+    {
+        throw invalid_argument( "Odwracona moze byc tylko macierz kwadratowa" );
+    }
+    int j, i, k;
+    int n=lwierszy();
+    int m=2*n;
+    Macierz diagonalna=Macierz::diag(n);
+    Macierz tmp(n, m, 0);
+    for (i=0;i<n;i++)//przepisanie macierzy do odwrocenia
+    {                
+        for (j=0;j<n;j++)
         {
-            tablica[i][j]=tmp.tablica[i][j];
+            tmp.tablica[i][j]=this->tablica[i][j];
+        }
+    }
+    for (i=0;i<n;i++)//przepisanie macierzy diagonalnej
+    {                
+        for (j=n;j<m;j++)
+        {
+            tmp.tablica[i][j]=diagonalna.tablica[i][(j-n)];
+        }
+    }
+    for (j=0;j<n;j++)
+    {                   //normalizacja
+        for (i=0;i<m;i++)
+        {
+            if (i != j)
+            {
+                tmp.tablica[j][i] = tmp.tablica[j][i] / tmp.tablica[j][j];
+            }
+            else
+            {
+                tmp.tablica[j][j]=1;
+            }
+        }               //redukcja
+        for (k = 0;k<n;k++)
+        {
+            if (k != j)
+            {
+                for (i = 0;i<m; i++)
+                {
+                    if (i != j)
+                    {
+                        tmp.tablica[k][i] = tmp.tablica[k][i] - (tmp.tablica[k][j] * tmp.tablica[j][i]);
+                    }
+                }
+                tmp.tablica[k][j] = 0;
+            }
+        }
+    }
+    for (i = 0;i<n;i++)//przepisanie na wlasciwa macierz
+    {                
+        for (j = 0;j<n;j++)
+        {
+            this->tablica[i][j]=tmp.tablica[i][(j+n)];
         }
     }
 }
 
-
-
-/*
-Macierz operator = (const Macierz &m)
+Macierz operator+(const Macierz &a, const Macierz &m)//operacja dodawania, nie dziala
 {
-    for(unsigned int k=0;k<tablica.size();k++)
+    #if _DEBUG == 1
+    std::cout << "przeladowanie +" << std::endl;
+    #endif // _DEBUG
+    if ((a.lwierszy()==m.lwierszy())&&a.lkolumn()==m.lkolumn())
     {
-        for(unsigned int j=0;j<kolumna.size();j++)
+    Macierz tmp(a.lwierszy(),a.lkolumn());
+    for(int i=0;i<a.lwierszy();i++)
+    {   for(int j=0;j<(a.lkolumn());j++)
         {
-            this[k][j]->=m[k][j];
+            tmp.tablica[i][j]=a.tablica[i][j]+m.tablica[i][j];
+        }
+    }
+    return tmp;
+    }
+    else
+    {
+    throw invalid_argument( "Niekompatybilne rozmiary macierzy! (operator +)" );
+    }
+}
+
+Macierz operator-(const Macierz& a, const Macierz& m)//operacja odejmowania wszystkie operatory nie dzialaja, czasem dzialaja
+{
+    #if _DEBUG == 1
+    std::cout << "przeladowanie -" << std::endl;
+    #endif // _DEBUG
+    if ((a.lwierszy()==m.lwierszy())&&a.lkolumn()==m.lkolumn())
+    {
+        Macierz tmp(a.lwierszy(),a.lkolumn());
+        for(int i=0;i<a.lwierszy();i++)
+        {   
+            for(int j=0;j<(a.lkolumn());j++)
+            {
+            tmp.tablica[i][j]=a.tablica[i][j]-m.tablica[i][j];
+            }
+        }
+        return tmp;
+    }
+    else
+    {
+    throw invalid_argument( "Niekompatybilne rozmiary macierzy! (operator -)" );
+    }
+}
+
+Macierz operator-( const Macierz& a ) //zmiana znaku elementow macierzy
+{
+    Macierz tmp(a.lwierszy(),a.lkolumn());
+    for(int i=0;i<a.lwierszy();i++)
+    {   
+        for(int j=0;j<(a.lkolumn());j++)
+        {
+            tmp.tablica[i][j]=-a.tablica[i][j];
+        }
+    }
+    return tmp;
+}
+
+Macierz operator*(const Macierz& a, const Macierz& m)//operacja mnozenia macierzy ze soba
+{
+    if (a.lkolumn()==m.lwierszy())
+    {
+        Macierz tmp(a.lwierszy(),m.lkolumn());
+        for( int i=0; i<tmp.lwierszy(); i++ )
+        {
+            for( int j=0; j<tmp.lkolumn(); j++ ) 
+                {
+                    for( int k=0; k<a.lkolumn(); k++ )
+                    {
+                        tmp.tablica[i][j] += a.tablica[i][k] * m.tablica[k][j];
+                    }
+                }
+        }
+        return tmp;
+    }        
+    else
+    {
+        throw invalid_argument( "Niekompatybilne rozmiary macierzy! (operator *)" );
+    }
+    
+}
+
+Macierz operator*(double f, const Macierz& m)//operacja mnozenia macierzy przez stala
+{
+    Macierz tmp( m.lwierszy(), m.lkolumn() );
+    for( int i=0; i<tmp.lwierszy(); i++ ) 
+    {
+        for( int j=0; j<tmp.lkolumn(); j++ ) 
+        {
+            tmp.tablica[i][j] = f * m.tablica[i][j];
+        }
+    }
+    return tmp;
+}
+
+Macierz operator*(const Macierz& m, double f)//operacja mnozenia macierzy przez stala
+{
+    return f*m;
+}
+
+Macierz operator/(const Macierz& a, Macierz& m)//mnozenie macierzy z odwrotnoscia 2 macierzy nie dziala, ale invert tez nie dziala
+{
+   Macierz tmp;
+   tmp=m;
+   tmp.invert();
+   return(a*tmp); 
+}
+
+
+/********************************************************************
+Kosz:
+
+/*Poprzednia wersja transpozycji
+    for(unsigned int i=0;i<(nwierszy);i++)
+    {
+        for(unsigned int j=0;j<(nkolumn);j++)
+        {
+            tablica[i][j]=tmp.tablica[i][j];
+        }
+    }
+    
+
+Macierz& Macierz::operator=(const Macierz& m)//operacja przypisania nie dziala, czasem dziala
+{
+    if( this != &m )
+    {
+        Macierz ( m.lwierszy(), m.lkolumn() );
+    }
+    for(int k=0;k<lwierszy();k++)
+    {
+        for(int j=0;j<lkolumn();j++)
+        {
+            tablica[k][j]=m.tablica[k][j];
         }
     }
     return *this;
 }
 */
-/*
-Macierz operator+(const Macierz &a, const Macierz &b)
-{
-    #if _DEBUG == 1
-    std::cout << "przeladowanie +" << std::endl;
-    #endif // _DEBUG
-    Macierz tmp(a.tablica.size(),a.kolumna.size());
-    for(unsigned int i=0;i<a.tablica.size();i++)
-    {   for(unsigned int j=0;j<(a.kolumna.size());j++)
-        {
-            tmp[i][j]=a[i][j]+b[i][j]);
-        }
-    }
-    return tmp;
-}
-*/
-/*Macierz & operator+=(const Macierz &q)
-{
-    #if _DEBUG == 1
-    std::cout << "przeladowanie +=" << std::endl;
-    #endif // _DEBUG
-    for(int i=0;i<tablica.size();i++)
-    {   for(int j=0;j<kolumna.size();j++)
-        {
-            this->tablica[i][j]+=q.tablica[i][j];
-        }
-    }
-    return * this;
-}*/
-/*
-Macierz operator-(const Macierz &q)
-{
-    #if _DEBUG == 1
-    std::cout << "przeladowanie -" << std::endl;
-    #endif // _DEBUG
-
-    Macierz tmp(this->dane[0] - q.dane[0], this->dane[1] - q.dane[1], this->dane[2] - q.dane[2], this->dane[3] - q.dane[3]);
-    return tmp;
-}
-Macierz & operator-=(const Macierz &q)
-{
-    #if _DEBUG == 1
-    std::cout << "przeladowanie -=" << std::endl;
-    #endif // _DEBUG
-
-            this->dane[0] -= q.dane[0];
-            this->dane[1] -= q.dane[1];
-            this->dane[2] -= q.dane[2];
-            this->dane[3] -= q.dane[3];
-            return * this;
-        }
-        Macierz operator*(const Macierz &q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie *" << std::endl;
-            #endif // _DEBUG
-
-            double a = this->dane[0]*q.dane[0] - this->dane[1]*q.dane[1] - this->dane[2]*q.dane[2] - this->dane[3]*q.dane[3];
-            double b = this->dane[0]*q.dane[1] + this->dane[1]*q.dane[0] + this->dane[2]*q.dane[3] - this->dane[3]*q.dane[2];
-            double c = this->dane[0]*q.dane[2] - this->dane[1]*q.dane[3] + this->dane[2]*q.dane[0] + this->dane[3]*q.dane[1];
-            double d = this->dane[0]*q.dane[3] + this->dane[1]*q.dane[2] - this->dane[2]*q.dane[1] + this->dane[3]*q.dane[0];
-            Macierz tmp(a,b,c,d);
-            return tmp;
-        }
-        Macierz & operator*=(const Macierz &q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie *=" << std::endl;
-            #endif // _DEBUG
-
-            double a = this->dane[0]*q.dane[0] - this->dane[1]*q.dane[1] - this->dane[2]*q.dane[2] - this->dane[3]*q.dane[3];
-            double b = this->dane[0]*q.dane[1] + this->dane[1]*q.dane[0] + this->dane[2]*q.dane[3] - this->dane[3]*q.dane[2];
-            double c = this->dane[0]*q.dane[2] - this->dane[1]*q.dane[3] + this->dane[2]*q.dane[0] + this->dane[3]*q.dane[1];
-            double d = this->dane[0]*q.dane[3] + this->dane[1]*q.dane[2] - this->dane[2]*q.dane[1] + this->dane[3]*q.dane[0];
-            this->dane[0] = a;
-            this->dane[1] = b;
-            this->dane[2] = c;
-            this->dane[3] = d;
-            return * this;
-        }
-        Macierz operator*(const int q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie * - dla liczb calkowitych" << std::endl;
-            #endif // _DEBUG
-
-            Macierz tmp(this->dane[0]*q,this->dane[1]*q,this->dane[2]*q,this->dane[3]*q);
-            return tmp;
-        }
-        Macierz & operator*=(const int q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie *= - dla liczb calkowitych" << std::endl;
-            #endif // _DEBUG
-
-            this->dane[0] *= q;
-            this->dane[1] *= q;
-            this->dane[2] *= q;
-            this->dane[3] *= q;
-            return * this;
-        }
-        Macierz operator*(const double q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie * - dla liczb rzeczywistych" << std::endl;
-            #endif // _DEBUG
-
-            Macierz tmp(this->dane[0]*q,this->dane[1]*q,this->dane[2]*q,this->dane[3]*q);
-            return tmp;
-        }
-        Macierz & operator*=(const double q)
-        {
-            #if _DEBUG == 1
-            std::cout << "przeladowanie * - dla liczb rzeczywistych" << std::endl;
-            #endif // _DEBUG
-
-            this->dane[0] *= q;
-            this->dane[1] *= q;
-            this->dane[2] *= q;
-            this->dane[3] *= q;
-            return * this;
-        }
-
-*/
-
-/* KOSZ --------------------------------------------------------------
- * 
-    for(int k=0;k<tablica.size();k++)
-    {
-        cout<<endl;
-        for (int l=0;l<kolumna.size();l++)
-    {
-        cout<<"Wprowadz element"<<k<<" i "<<l<<"macierzy:  ";
-        cin>>tablica[k][l];
-        cout<<"wprowadzono:  "<<tablica[k][l]<<endl;
-    }
-    }
-
-
-double Macierz::at( int i, int j) const
-{
-    
-	if( i<0 || i >= rtab ) throw std::out_of_range( "indeks spoza zakresu lub macierz nie utworzona!" );
-	if( j<0 || j >= rozm ) throw std::out_of_range( "indeks spoza zakresu!" );
-
-	return wartosc[i][j];
-}
-    */
-    
