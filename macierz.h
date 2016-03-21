@@ -23,16 +23,15 @@ public:
     vector< vector<double> > tablica;
     
     //Konstruktory
-    Macierz(int nwierszy, int mkolumn);//jkonstruktor macierzy o n wierszach i m kolumnach (wypelnia wybrana macierz 0)
-    Macierz(int nwierszy, int mkolumn, double liczba);//j.w. wypelnia wybrana liczba
-    Macierz(Macierz &) {cout<<"skopiowano albo i nie\n w sumie to ... nie"<<endl;}
-    Macierz();
+    Macierz(int nwierszy=1, int mkolumn=1, double liczba=0);//Konstruktor macierzy, domyslnie 1x1 wypelniona 0
+    //Macierz(int nwierszy=1, int mkolumn=1, double liczba=0, char opcja='a');//Konstruktor macierzy diagonalnej
+    Macierz(const Macierz& m )  { operator = (m);}
     //Dekstruktor
     ~Macierz();
     
     //Funkcje
-    int lwierszy() {return tablica[0].size();}
-    int lkolumn() {return tablica.size();}
+    int lwierszy() const {return tablica.size();}
+    int lkolumn() const {return tablica[0].size();}
     
     void wyswietl();
     void wyswietl(int i, int j);
@@ -41,6 +40,8 @@ public:
     void wprowadz();
     void wprowadz(int i);
     void wprowadz(int i, int j);
+    
+    static Macierz diag(int i);
     
     double determ();    
         
@@ -64,15 +65,25 @@ public:
     void t();
 
 
-    Macierz odwrotnosc();
+    void invert();
     double at( int i, int j ) const;
     
     
     //przeciazenia
-    Macierz operator = (const Macierz &m);
-    friend Macierz operator +  ( const Macierz& a, const Macierz& b );
-    //Macierz& operator += ( const Macierz& m ) { return *this = *this + m; }
 
+    Macierz& operator += ( const Macierz& m ) { return *this = *this + m; }
+    Macierz& operator -= ( const Macierz& m ) { return *this = *this - m; }
+    Macierz& operator *= ( const Macierz& m ) { return *this = *this * m; }
+    Macierz& operator *= ( double f )         { return *this = *this * f; }
+    Macierz& operator /= ( const Macierz& m ) { return *this = *this / m; }
+    friend Macierz operator +  ( const Macierz& a, const Macierz& m );
+    friend Macierz operator -  ( const Macierz& m );
+    friend Macierz operator +  ( const Macierz& a, const Macierz& m );
+    friend Macierz operator -  ( const Macierz& a, const Macierz& m );
+    friend Macierz operator *  ( const Macierz& a, const Macierz& m );
+    friend Macierz operator *  ( double f, const Macierz& m );
+    friend Macierz operator *  ( const Macierz& m, double f );
+    friend Macierz operator /  ( const Macierz& a, const Macierz& m );
 };
 
 #endif // MACIERZ_H
