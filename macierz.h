@@ -13,60 +13,61 @@ class Macierz
 {
 private:
 
-    double determ(int);
     bool czykwadratowa();
+    int konw(int n);//obsluguje poprawne wpisanie liczb
+    double konw(double n);//obsluguje poprawne wpisanie liczb typu double
+    
+    vector<double> kolumna;//jak cos to dac na public
+    vector< vector<double> > tablica;
     
 public:
 
     // Zmienne
-    vector<double> kolumna;
-    vector< vector<double> > tablica;
+
     
     //Konstruktory
-    Macierz(int nwierszy=1, int mkolumn=1, double liczba=0);//Konstruktor macierzy, domyslnie 1x1 wypelniona 0
-    //Macierz(int nwierszy=1, int mkolumn=1, double liczba=0, char opcja='a');//Konstruktor macierzy diagonalnej
-    Macierz(const Macierz& m )  { operator = (m);}
+    Macierz(int=1, int=1, double=0);//Konstruktor macierzy, domyslnie 1x1 wypelniona 0
+
     //Dekstruktor
     ~Macierz();
     
+    void set(int=1, int=1, double=0);
     //Funkcje
-    int lwierszy() const {return tablica.size();}
-    int lkolumn() const {return tablica[0].size();}
     
-    void wyswietl();
-    void wyswietl(int i, int j);
-    void wyswietl(int i);
+    int lwierszy() const {return tablica.size();} //wyswietla ilosc wierszy macierz
+    int lkolumn() const {return tablica[0].size();} //wyswietla ilosc kolumn macierzy
     
-    void wprowadz();
-    void wprowadz(int i);
-    void wprowadz(int i, int j);
+    void wyswietl(); //wyswietla cala macierz
+    void wyswietl(int i, int j);//wyswietla element macierzy
+    void wyswietl(int i);//wsywietla wybrany wiersz macierzy
     
-    static Macierz diag(int i);
+    void wprowadz();//opcja wprowadzenia calej macierz
+    void wprowadz(int i);//opcja wprowadzenia wybranego wiersza
+    void wprowadz(int i, int j);//opcja wprowadzenia wybranego elementu
     
-    double determ();    
-        
-    void dodajwiersz();
-    void dodajwiersz(vector <double>);
-    void dodajwiersz(vector <double>, int);
+    static Macierz diag(int i);//stowrzenie macierzy diagonalnej
     
-    void usunwiersz();
-    void usunwiersz(int);
+    double wyznacznik();//obliczenie wyznacznika
     
-    void dodajkolumne();
-    void dodajkolumne(vector <double>);
-    void dodajkolumne(int i);
-    void dodajkolumne(vector <double>, int);
+    void dodajwiersz();//dodanie wiersza na koniec macierzy
+    void dodajwiersz(int i);//dodanie wiersza w wybranym miejscu macierzy
+    void dodajwiersz(vector <double>);//dodanie wektora na koniec (juz zdefiniowanego)
+    void dodajwiersz(vector <double>, int);//dodanie wektora w wybrane miejsce (juz zdefiniowanego
     
-    void usunkolumne();
-    void usunkolumne(int);
+    void usunwiersz();//usuwa wiersz
+    void usunwiersz(int);//usuwa wybrany wiersz
     
-    void usunmacierz();
+    void dodajkolumne();//dodaje kolumne na koniec macierzy
+    void dodajkolumne(int i);//dodaje kolumne w wybrane miejsce macierzy
     
-    void t();
+    void usunkolumne();//usuwa kolumne
+    void usunkolumne(int);//usuwa wybrana kolumne
+    
+    void usunmacierz();//usuwa cala macierz
+    
+    void t();//transpozycja macierzy
 
-
-    void invert();
-    double at( int i, int j ) const;
+    void invert();//odwrocenie macierzy
     
     
     //przeciazenia
@@ -84,6 +85,9 @@ public:
     friend Macierz operator *  ( double f, const Macierz& m );
     friend Macierz operator *  ( const Macierz& m, double f );
     friend Macierz operator /  ( const Macierz& a, const Macierz& m );
+    
+    friend std::ostream & operator<< ( std::ostream & wyjscie, Macierz const& _m );
+    friend std::istream& operator >> ( std::istream & mat, Macierz& m );
 };
 
 #endif // MACIERZ_H
