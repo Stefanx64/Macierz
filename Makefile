@@ -1,8 +1,6 @@
-.PHONY: clean All
+PROG=Macierze
 
-All:
-	@echo "----------Building project:[ Macierze - Debug ]----------"
-	@$(MAKE) -f  "Macierze.mk"
+all: main.cpp macierz.cpp
+	$(CXX)  -g -std=c++11 -o $(PROG) main.cpp macierz.cpp
 clean:
-	@echo "----------Cleaning project:[ Macierze - Debug ]----------"
-	@$(MAKE) -f  "Macierze.mk" clean
+	$(RM) $(PROG)
